@@ -1,4 +1,8 @@
-package csv_simple
+// simple_csv is a a wrapper around the built-in csv package which adds some features such as reading from
+// a start and end point. It makes some options such as changing the delimiter more clear e.g. it is called
+// 'delimiter' instead of 'comma'
+
+package simple_csv
 
 import (
 	"os"
@@ -13,6 +17,7 @@ const (
 	MAXUINT = ^uint(0)
 )
 
+// Holds csv reader info used when calling the Read() method. Only filePath is required. Other fields are optional.
 type csvReader struct {
 	filePath	string
 	Start		int
@@ -23,6 +28,8 @@ type csvReader struct {
 	Data		[][]string
 }
 
+// Constructor for creating a csvReader instance. Initialised only with the csv filePath to read. Other fields
+// are set with setter methods.
 func NewCSVReader(filePath string) (csvReader, error) {
 	if _, err := os.Open(filePath); err != nil {
 		return csvReader{}, fmt.Errorf("invalid file path: %v", err)
@@ -36,7 +43,7 @@ func NewCSVReader(filePath string) (csvReader, error) {
 		commentChar: 0}, nil
 }
 
-func (csvReader *csvReader) SetDelimiter(delim rune) error {
+func (csvReader *csvReader) Delimiter(delim rune) error {
 	if delim == rune('\n') || delim == rune('\r') {
 		return fmt.Errorf("delimiter cannot be '\\n' or '\\r'")
 	}
@@ -44,7 +51,7 @@ func (csvReader *csvReader) SetDelimiter(delim rune) error {
 	return nil
 }
 
-func (csvReader *csvReader) SetCommentChar(commChar rune) error {
+func (csvReader *csvReader) CommentChar(commChar rune) error {
 	if commChar == rune('\n') || commChar == rune('\r') || commChar == rune(',') {
 		return fmt.Errorf("delimiter cannot be '\\n', '\\r' or ','")
 	}
